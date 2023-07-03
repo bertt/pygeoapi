@@ -25,7 +25,7 @@ cd env
 source bin/activate
 
 # install dependencies
-pip install Django pygeoapi
+pip3 install Django pygeoapi
 
 # create a Django project
 django-admin startproject sampleproject

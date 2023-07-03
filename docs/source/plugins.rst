@@ -140,7 +140,7 @@ Customizing pygeoapi process manager
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The pygeoapi process manager may also be customized. Similarly to the provider plugins, you may use the pygeoapi
-configuration's ``server.manager.name`` to indicate either the dotted path to the python package and the relevant
+configuration's ``server.manager.name`` to indicate either the dotted path to the Python package and the relevant
 manager class (*i.e.* similar to option 1 above) or the name of a known core pygeoapi plugin (*i.e.*, similar to
 option 2 above).
 

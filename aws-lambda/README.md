@@ -17,7 +17,7 @@ variables `AWS_ACCESS_KEY` and `AWS_SECRET_ACCESS_KEY` are set and available.
 
 ```bash
 # install zappa
-pip install zappa
+pip3 install zappa
 
 # set environment variables
 export AWS_ACCESS_KEY_ID=foo
