@@ -3439,6 +3439,7 @@ class API:
         }
         for job_ in jobs:
             job2 = {
+                'type': 'process',
                 'processID': job_['process_id'],
                 'jobID': job_['identifier'],
                 'status': job_['status'],
@@ -4041,6 +4042,7 @@ class API:
         LOGGER.error(description)
         exception = {
             'code': code,
+            'type': code,
             'description': description
         }
 

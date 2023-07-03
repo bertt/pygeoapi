@@ -219,6 +219,7 @@ class BaseManager:
         current_status = JobStatus.accepted
 
         job_metadata = {
+            'type': 'process',
             'identifier': job_id,
             'process_id': process_id,
             'job_start_datetime': datetime.utcnow().strftime(
