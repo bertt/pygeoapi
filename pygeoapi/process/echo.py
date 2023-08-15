@@ -1,8 +1,10 @@
 # =================================================================
 #
 # Authors: Alexander Pilz <a.pilz@52north.org>
+#          Tom Kralidis <tomkralidis@gmail.com>
 #
 # Copyright (c) 2023 Alexander Pilz
+# Copyright (c) 2023 Tom Kralidis
 #
 # Permission is hereby granted, free of charge, to any person
 # obtaining a copy of this software and associated documentation
@@ -26,6 +28,7 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 # =================================================================
+
 import logging
 import time
 
@@ -99,7 +102,7 @@ PROCESS_METADATA = {
 }
 
 
-class echoProcessor(BaseProcessor):
+class EchoProcessor(BaseProcessor):
     """Echo Processor example"""
     def __init__(self, processor_def):
         """
@@ -107,7 +110,7 @@ class echoProcessor(BaseProcessor):
 
         :param processor_def: provider definition
 
-        :returns: pygeoapi.process.echo.echoProcessor
+        :returns: pygeoapi.process.echo.EchoProcessor
         """
 
         super().__init__(processor_def, PROCESS_METADATA)
@@ -116,24 +119,26 @@ class echoProcessor(BaseProcessor):
 
         mimetype = 'application/json'
 
-        echo = data.get('echoInput', None)
-        pause = data.get('pause', None)
+        echo = data.get('echoInput')
+        pause = data.get('pause')
 
         if echo is None:
             raise ProcessorExecuteError(
                 'Cannot run process without echo value')
+
         if not isinstance(echo, str):
             raise ProcessorExecuteError(
-                'Cannot run process with echo not of type String')
+                'Cannot run process with echo not of type string')
 
         outputs = {
             'id': 'echoOutput',
             'value': echo
         }
+
         if pause is not None and isinstance(pause, float):
             time.sleep(pause)
 
         return mimetype, outputs
 
     def __repr__(self):
-        return '<echoProcessor> {}'.format(self.name)
+        return f'<EchoProcessor> {self.name}'
