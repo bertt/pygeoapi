@@ -83,9 +83,9 @@ the following contents:
    # module: myplugin.cli
    import click
 
-   @click.command(name="super-command")
+   @click.command(name='super-command')
    def my_cli_command():
-       print("Hello, this is my custom pygeoapi CLI command!")
+       print('Hello, this is my custom pygeoapi CLI command!')
 
 
 Then, in your plugin's ``setup.py`` file, specify the entrypoints section:
@@ -104,7 +104,7 @@ Alternatively, if using a ``pyproject.toml`` file instead:
    # file: pyproject.toml
    # Noter that this example uses poetry, other Python projects may differ in
    # how they expect entry_points to be specified
-   [tool.poetry.plugins."pygeoapi"]
+   [tool.poetry.plugins.'pygeoapi']
    my-plugin = 'myplugin.cli:my_cli_command'
 
 
@@ -140,7 +140,7 @@ Customizing pygeoapi process manager
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The pygeoapi process manager may also be customized. Similarly to the provider plugins, you may use the pygeoapi
-configuration's ``server.manager.name`` to indicate either the dotted path to the Python package and the relevant
+configuration's ``server.manager.name`` to indicate either the dotted path to the python package and the relevant
 manager class (*i.e.* similar to option 1 above) or the name of a known core pygeoapi plugin (*i.e.*, similar to
 option 2 above).
 
@@ -180,7 +180,7 @@ The below template provides a minimal example (let's call the file ``mycoolvecto
 
            # optionally specify the output filename pygeoapi can use as part
            # of the response (HTTP Content-Disposition header)
-           self.filename = "my-cool-filename.dat"
+           self.filename = 'my-cool-filename.dat'
 
            # open data file (self.data) and process, return
            return {
@@ -253,7 +253,7 @@ The below template provides a minimal example (let's call the file ``mycoolraste
 
            # optionally specify the output filename pygeoapi can use as part
            of the response (HTTP Content-Disposition header)
-           self.filename = "my-cool-filename.dat"
+           self.filename = 'my-cool-filename.dat'
 
            if format_ == 'json':
                # return a CoverageJSON representation
@@ -262,13 +262,78 @@ The below template provides a minimal example (let's call the file ``mycoolraste
                # return default (likely binary) representation
                return bytes(112)
 
-For brevity, the above code will always JSON for metadata and binary or CoverageJSON for the data.  In reality, the plugin
+For brevity, the above code will always return JSON for metadata and binary or CoverageJSON for the data.  In reality, the plugin
 developer would connect to a data source with capabilities to run queries and return a relevant result set,
 As long as the plugin implements the API contract of its base provider, all other functionality is left to the provider
 implementation.
 
 Each base class documents the functions, arguments and return types required for implementation.
 
+Example: custom pygeoapi processing plugin
+------------------------------------------
+
+Let's consider a simple process plugin to calculate a square root from a number (source code is located here: :ref:`data Process`).
+
+Python code
+^^^^^^^^^^^
+
+The below template provides a minimal example (let's call the file ``mycoolsqrtprocess.py``:
+
+.. code-block:: python
+
+   import math
+
+   from pygeoapi.process.base import BaseProcessor, ProcessorExecuteError
+
+   PROCESS_METADATA = {
+       # reduced for brevity (see examples of PROCESS_METADATA in pygeoapi/process/hello_world.py)
+   }
+
+   class MyCoolSqrtProcessor(BaseProcessor)
+       """My cool sqrt process plugin"""
+
+       def __init__(self, processor_def):
+           """
+           Initialize object
+
+           :param processor_def: provider definition
+
+           :returns: pygeoapi.process.mycoolsqrtprocess.MyCoolSqrtProcessor
+           """
+
+           super().__init__(processor_def, PROCESS_METADATA)
+
+       def execute(self, data):
+
+           mimetype = 'application/json'
+           number = data.get('number')
+
+           if number is None:
+               raise ProcessorExecuteError('Cannot process without a number')
+
+           try:
+               number = float(data.get('number'))
+           except TypeError:
+               raise ProcessorExecuteError('Number required')
+
+           value = math.sqrt(number)
+
+           outputs = {
+               'id': 'sqrt',
+               'value': value
+           }
+
+           return mimetype, outputs
+
+       def __repr__(self):
+           return f'<MyCoolSqrtProcessor> {self.name}'
+
+
+The example above handles a dictionary of the JSON payload passed from the client, calculates the square root of a float or integer, and returns the result in an output JSON payload.  The plugin is responsible for defining the expected inputs and outputs in ``PROCESS_METADATA`` and to return the output in any format along with the corresponding media type.
+
+.. note::
+
+   Additional processing plugins can also be found in ``pygeoapi/process``.
 
 Example: custom pygeoapi formatter
 ----------------------------------
@@ -301,14 +366,6 @@ The below template provides a minimal example (let's call the file ``mycooljsonf
                out_data.append(feature['properties'])
 
            return out_data
-
-
-Processing plugins
-------------------
-
-Processing plugins are following the OGC API - Processes development.  Given that the specification is
-under development, the implementation in ``pygeoapi/process/hello_world.py`` provides a suitable example
-for the time being.
 
 
 Featured plugins

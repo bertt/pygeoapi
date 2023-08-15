@@ -67,7 +67,7 @@ Utils
    :special-members:
 
 
-Formatter package
+Formatter
 -----------------
 
 .. automodule:: pygeoapi.formatter
@@ -97,8 +97,10 @@ csv
    :special-members:
 
 
-Process package
----------------
+.. _data Process:
+
+Process
+-------
 
 .. automodule:: pygeoapi.process
    :show-inheritance:
